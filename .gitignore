@@ -1,6 +1,5 @@
-
-
 # cmake
+/build/
 CMakeCache.txt
 CMakeFiles
 CTestTestfile.cmake
@@ -55,3 +54,10 @@ tests/bench_str.csv
 config.h.in
 examples/simple
 examples/simple_cpp
+
+# Buck
+/.buckd/
+/buck-out/
+/buckaroo/
+.buckconfig.local
+BUCKAROO_DEPS
