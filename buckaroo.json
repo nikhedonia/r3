@@ -1,6 +1,7 @@
 {
   "name": "r3",
   "dependencies": {
-    "pcre/pcre": "8.36.0"
+    "pcre/pcre": "8.36.0",
+    "jemalloc/jemalloc": "5.0.1"
   }
 }
