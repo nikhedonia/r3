@@ -11,6 +11,9 @@ cxx_library(
     ('include', '**/*.h'),
     ('include', '**/*.hpp'),
   ]),
+  headers = subdir_glob([
+    ('src', '**/*.h'),
+  ]),
   platform_headers = [
     ('default', macos_headers),
     ('^macos.*', macos_headers),
