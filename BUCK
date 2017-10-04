@@ -34,7 +34,7 @@ macos_preprocessor_flags = [
   '-DHAVE_SYS_TYPES_H=1',
   '-DHAVE_UNISTD_H=1',
   '-DHAVE__BOOL=1',
-  '-DUSE_JEMALLOC=1',
+  # '-DUSE_ZLIB=1',
 ]
 
 cxx_library(

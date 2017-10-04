@@ -56,7 +56,3 @@ void str_array_dump(const str_array *l) {
     }
     printf("]\n");
 }
-
-
-
-
