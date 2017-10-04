@@ -7,13 +7,13 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "r3.h"
-#include "r3_str.h"
+#include "r3_slug.h"
 #include "zmalloc.h"
 
 START_TEST (test_routes)
 {
-    node * n = r3_tree_create(10);
-    node * m = NULL;
+    R3Node * n = r3_tree_create(10);
+    R3Node * m = NULL;
 
     char *data0 = "/foo/bar/baz";
     r3_tree_insert_path(n, "/foo/bar/baz", (void*) data0);

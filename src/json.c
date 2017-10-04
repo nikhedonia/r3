@@ -9,29 +9,29 @@
 #include "r3.h"
 #include "r3_json.h"
 
-json_object * r3_route_to_json_object(const route * r) {
+json_object * r3_route_to_json_object(const R3Route * r) {
     json_object *obj;
 
     obj = json_object_new_object();
-    json_object_object_add(obj, "path", json_object_new_string(r->path));
+    json_object_object_add(obj, "path", json_object_new_string(r->path.base));
     json_object_object_add(obj, "allowed_methods", json_object_new_int(r->request_method));
 
 
     if (r->host) {
-        json_object_object_add(obj, "host", json_object_new_string(r->host));
+        json_object_object_add(obj, "host", json_object_new_string(r->host.base));
     }
     if (r->remote_addr_pattern) {
-        json_object_object_add(obj, "remote_addr_pattern", json_object_new_string(r->remote_addr_pattern));
+        json_object_object_add(obj, "remote_addr_pattern", json_object_new_string(r->remote_addr_pattern.base));
     }
     return obj;
 }
 
 
-json_object * r3_edge_to_json_object(const edge * e) {
+json_object * r3_edge_to_json_object(const R3Edge * e) {
     json_object *obj;
 
     obj = json_object_new_object();
-    json_object_object_add(obj, "pattern", json_object_new_string(e->pattern));
+    json_object_object_add(obj, "pattern", json_object_new_string(e->pattern.base));
     json_object_object_add(obj, "opcode", json_object_new_int(e->opcode));
     json_object_object_add(obj, "slug", json_object_new_boolean(e->has_slug));
 
@@ -42,7 +42,7 @@ json_object * r3_edge_to_json_object(const edge * e) {
     return obj;
 }
 
-json_object * r3_node_to_json_object(const node * n) {
+json_object * r3_node_to_json_object(const R3Node * n) {
     json_object *obj;
 
     obj = json_object_new_object();
@@ -60,7 +60,7 @@ json_object * r3_node_to_json_object(const node * n) {
         json_object *edges_array = json_object_new_array();
         json_object_object_add(obj, "edges", edges_array);
         for (i = 0 ; i < n->edge_len ; i++ ) {
-            json_object *edge_json_obj = r3_edge_to_json_object(n->edges[i]);
+            json_object *edge_json_obj = r3_edge_to_json_object(n->edges.entries + i);
             json_object_array_add(edges_array, edge_json_obj);
         }
     }
@@ -69,7 +69,7 @@ json_object * r3_node_to_json_object(const node * n) {
         json_object *routes_array = json_object_new_array();
         json_object_object_add(obj, "routes", routes_array);
         for (i = 0; i < n->route_len; i++ ) {
-            json_object *route_json_obj = r3_route_to_json_object(n->routes[i]);
+            json_object *route_json_obj = r3_route_to_json_object(n->routes.entries + i);
             json_object_array_add(routes_array, route_json_obj);
         }
     }
@@ -79,17 +79,17 @@ json_object * r3_node_to_json_object(const node * n) {
 }
 
 
-const char * r3_node_to_json_string_ext(const node * n, int options) {
+const char * r3_node_to_json_string_ext(const R3Node * n, int options) {
     json_object *obj = r3_node_to_json_object(n);
     return json_object_to_json_string_ext(obj, options);
 }
 
-const char * r3_node_to_json_pretty_string(const node * n) {
+const char * r3_node_to_json_pretty_string(const R3Node * n) {
     json_object *obj = r3_node_to_json_object(n);
     return json_object_to_json_string_ext(obj, JSON_C_TO_STRING_PRETTY | JSON_C_TO_STRING_SPACED);
 }
 
-const char * r3_node_to_json_string(const node * n) {
+const char * r3_node_to_json_string(const R3Node * n) {
     json_object *obj = r3_node_to_json_object(n);
     return json_object_to_json_string(obj);
 }

@@ -10,6 +10,7 @@ AC_PROG_CC
 AC_PROG_CC_STDC
 AC_PROG_CXX
 AC_PROG_INSTALL
+AC_HEADER_STDBOOL
 
 # older debian
 AC_PROG_LIBTOOL
@@ -50,7 +51,7 @@ if test "x$found_jemalloc" == "xyes" ; then
 
 AC_MSG_CHECKING([Checking jemalloc version])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <jemalloc/jemalloc.h>]],
-                                    [[   
+                                    [[
                                      #ifdef JEMALLOC_VERSION_MAJOR > 2
                                      return 0;
                                      #endif
@@ -117,15 +118,17 @@ AC_ARG_ENABLE(check,
               AS_HELP_STRING([--enable-check],
                              [enable unit testing]),
               , enable_check=unset)
+
 if test "x$enable_check" != "xunset" ; then
 PKG_CHECK_MODULES(CHECK,[check >= 0.9.4],:,[
   ifdef([AM_PATH_CHECK],
-  [AM_PATH_CHECK(,[have_check="yes"])],
-  AC_MSG_WARN([Check not found; cannot run unit tests!])
-  [have_check="no"])]
+    [AM_PATH_CHECK(,[have_check="yes"])],
+    AC_MSG_WARN([Check not found; cannot run unit tests!])
+    [have_check="no"]
+  )]
 ])
 fi
-AM_CONDITIONAL(HAVE_CHECK, test x"$have_check" = "xyes")
+AM_CONDITIONAL(ENABLE_CHECK, test "x$enable_check" = "xyes")
 
 AC_CONFIG_FILES([
   r3.pc

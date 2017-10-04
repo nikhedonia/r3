@@ -150,12 +150,17 @@
 
         var lines = data.split(/\n/);
 
-        // keep window size to 30 records
-        lines.splice(-30);
-        lines = lines.splice(lines.length - 30);
+        // keep window size to 60 records
+        lines = lines.splice(-60);
 
         $(lines).each(function(i,line) {
+            if (line == "") {
+                return;
+            }
             var columns = line.split(/,/);
+            if (columns.length == 0) {
+                return;
+            }
             var a;
             a = parseInt(columns[1]);
             options.series[0].data.push(a || 0);

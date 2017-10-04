@@ -1,4 +1,8 @@
-SUBDIRS=3rdparty src . tests examples
+SUBDIRS=3rdparty src . examples
+
+if ENABLE_CHECK
+SUBDIRS += tests
+endif
 
 lib_LTLIBRARIES = libr3.la
 libr3_la_SOURCES =
@@ -13,6 +17,8 @@ ACLOCAL_AMFLAGS=-I m4
 
 if ENABLE_DEBUG
 AM_CFLAGS += -ggdb -fprofile-arcs -ftest-coverage
+else
+AM_CFLAGS += -O2
 endif
 
 if USE_JEMALLOC
@@ -21,10 +27,10 @@ endif
 
 r3_includedir = $(includedir)/r3
 r3_include_HEADERS = \
+	include/memory.h \
 	include/r3.h \
-	include/r3_define.h \
 	include/r3_list.h \
-	include/r3_str.h \
+	include/r3_slug.h \
 	include/r3_gvc.h \
 	include/r3_json.h \
 	include/str_array.h \

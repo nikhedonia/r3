@@ -12,7 +12,7 @@
 #include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
 
 #include "r3.h"
-#include "r3_str.h"
+#include "r3_slug.h"
 #include "zmalloc.h"
 #include "bench.h"
 
@@ -96,7 +96,7 @@ void bench_append_csv(char *filename, int countOfB, ...) {
 
 int main()
 {
-    node * n = r3_tree_create(1);
+    R3Node * n = r3_tree_create(1);
 
     int route_data = 999;
 
@@ -441,7 +441,7 @@ r3_tree_insert_path(n, "/garply/grault/corge",  NULL);
     r3_tree_compile(n, NULL);
     END_MEASURE(tree_compile)
 
-    node *m;
+    R3Node * m;
     m = r3_tree_match(n , "/qux/bar/corge", NULL);
     assert(m != NULL);
     assert( *((int*) m->data) == 999 );
@@ -461,10 +461,11 @@ r3_tree_insert_path(n, "/garply/grault/corge",  NULL);
     BENCHMARK_SUMMARY(str_match_entry);
 
 
-    node * tree2 = r3_tree_create(1);
+    R3Node * tree2 = r3_tree_create(1);
     r3_tree_insert_path(tree2, "/post/{year}/{month}",  NULL);
     r3_tree_compile(tree2, NULL);
-
+    // r3_tree_dump(tree2,0);
+    
     BENCHMARK(pcre_dispatch)
     r3_tree_matchl(tree2, "/post/2014/12", strlen("/post/2014/12"), NULL);
     END_BENCHMARK(pcre_dispatch)

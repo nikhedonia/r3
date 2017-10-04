@@ -37,8 +37,8 @@ namespace r3 {
     private:
         T* p_;
     };
-    typedef Base<node> Node;
-    typedef Base<route> Route;
+    typedef Base<R3Node> Node;
+    typedef Base<R3Route> Route;
 
     class MatchEntry : public Base<match_entry> {
     public:
@@ -69,7 +69,7 @@ namespace r3 {
         MatchEntry& operator =(const MatchEntry&);
     };
 
-    class Tree : public Base<node> {
+    class Tree : public Base<R3Node> {
     public:
         explicit Tree(int cap)
             : Base(r3_tree_create(cap)) {
@@ -90,13 +90,13 @@ namespace r3 {
         }
 
         Node insert_path(const char* path, void* data, char** errstr = NULL) {
-            return r3_tree_insert_pathl_ex(get(), path, std::strlen(path), NULL,
+            return r3_tree_insert_pathl_ex(get(), path, std::strlen(path), 0, 0,
                 data, errstr);
         }
 
         Node insert_pathl(const char* path, int path_len, void* data,
             char** errstr = NULL) {
-            return r3_tree_insert_pathl_ex(get(), path, path_len, NULL, data,
+            return r3_tree_insert_pathl_ex(get(), path, path_len, 0, 0, data,
                 errstr);
         }
 

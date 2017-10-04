@@ -1,12 +1,12 @@
 R3
 ================
 
-[![Build Status](https://travis-ci.org/c9s/r3.svg?branch=master)](https://travis-ci.org/c9s/r3)
+[![Build Status](https://travis-ci.org/c9s/r3.svg?branch=2.0)](https://travis-ci.org/c9s/r3)
 
 [![Coverage Status](https://coveralls.io/repos/c9s/r3/badge.svg)](https://coveralls.io/r/c9s/r3)
 
 R3 is an URL router library with high performance, thus, it's implemented in C.
-It compiles your route paths into a prefix trie.
+It compiles your R3Route paths into a prefix trie.
 
 By using the prefix tree constructed in the start-up time, you can dispatch
 the path to the controller with high efficiency.
@@ -43,11 +43,11 @@ API
 #include <r3/r3.h>
 
 // create a router tree with 10 children capacity (this capacity can grow dynamically)
-node *n = r3_tree_create(10);
+R3Node *n = r3_tree_create(10);
 
 int route_data = 3;
 
-// insert the route path into the router tree
+// insert the R3Route path into the router tree
 r3_tree_insert_path(n, "/bar", &route_data); // ignore the length of path
 
 r3_tree_insert_pathl(n, "/zoo", strlen("/zoo"), &route_data );
@@ -61,7 +61,7 @@ r3_tree_insert_pathl(n, "/user/{id:\\d+}", strlen("/user/{id:\\d+}"), &route_dat
 // if you want to catch error, you may call the extended path function for insertion
 int data = 10;
 char *errstr = NULL;
-node *ret = r3_tree_insert_pathl_ex(n, "/foo/{name:\\d{5}", strlen("/foo/{name:\\d{5}"), NULL, &data, &errstr);
+R3Node *ret = r3_tree_insert_pathl_ex(n, "/foo/{name:\\d{5}", strlen("/foo/{name:\\d{5}"), NULL, &data, &errstr);
 if (ret == NULL) {
     // failed insertion
     printf("error: %s\n", errstr);
@@ -83,7 +83,7 @@ if (err != 0) {
 r3_tree_dump(n, 0);
 
 // match a route
-node *matched_node = r3_tree_matchl(n, "/foo/bar", strlen("/foo/bar"), NULL);
+R3Node *matched_node = r3_tree_matchl(n, "/foo/bar", strlen("/foo/bar"), NULL);
 if (matched_node) {
     int ret = *( (int*) matched_node->data );
 }
@@ -114,10 +114,10 @@ entry->request_method = METHOD_POST;
 entry->request_method = METHOD_GET | METHOD_POST;
 ```
 
-When using `match_entry`, you may match the route with `r3_tree_match_entry` function:
+When using `match_entry`, you may match the R3Route with `r3_tree_match_entry` function:
 
 ```c
-node *matched_node = r3_tree_match_entry(n, entry);
+R3Node * matched_node = r3_tree_match_entry(n, entry);
 ```
 
 
@@ -125,7 +125,7 @@ node *matched_node = r3_tree_match_entry(n, entry);
 
 **Release Memory**
 
-To release the memory, you may call `r3_tree_free(node *tree)` to release the whole tree structure, 
+To release the memory, you may call `r3_tree_free(R3Node *tree)` to release the whole tree structure, 
 `node*`, `edge*`, `route*` objects that were inserted into the tree will be freed.
 
 
@@ -141,7 +141,7 @@ n = r3_tree_create(10);
 
 int route_data = 3;
 
-// insert the route path into the router tree
+// insert the R3Route path into the router tree
 r3_tree_insert_routel(n, METHOD_GET | METHOD_POST, "/blog/post", sizeof("/blog/post") - 1, &route_data );
 
 char *errstr = NULL;
@@ -160,7 +160,7 @@ match_entry * entry = match_entry_create("/blog/post");
 entry->request_method = METHOD_GET;
 
 
-route *matched_route = r3_tree_match_route(n, entry);
+R3Route *matched_R3Route = r3_tree_match_route(n, entry);
 matched_route->data; // get the data from matched route
 
 // free the objects at the end
@@ -179,7 +179,7 @@ To specify the pattern of a slug, you may write a colon to separate the slug nam
 
     "/user/{userId:\\d+}"
 
-The above route will use `\d+` as its pattern.
+The above R3Route will use `\d+` as its pattern.
 
 
 Optimization
@@ -206,7 +206,7 @@ And here is the result of the router journey:
 
                  omg     9932.9 (±4.8%) i/s -      49873 in   5.033452s
 
-r3 uses the same route path data for benchmarking, and here is the benchmark:
+r3 uses the same R3Route path data for benchmarking, and here is the benchmark:
 
                 3 runs, 5000000 iterations each run, finished in 1.308894 seconds
                 11460057.83 i/sec
@@ -214,7 +214,7 @@ r3 uses the same route path data for benchmarking, and here is the benchmark:
 
 ### The Route Paths Of Benchmark
 
-The route path generator is from <https://github.com/stevegraham/rails/pull/1>:
+The R3Route path generator is from <https://github.com/stevegraham/rails/pull/1>:
 
 ```ruby
 #!/usr/bin/env ruby
@@ -242,7 +242,7 @@ Function prefix mapping
 Rendering Routes With Graphviz
 ---------------------------------------
 
-The `r3_tree_render_file` API let you render the whole route trie into a image.
+The `r3_tree_render_file` API let you render the whole R3Route trie into a image.
 
 To use graphviz, you need to enable graphviz while you run `configure`:
 
@@ -254,7 +254,7 @@ Here is the sample code of generating graph output:
 
 
 ```c
-node * n = r3_tree_create(1);
+R3Node * n = r3_tree_create(1);
 
 r3_tree_insert_path(n, "/foo/bar/baz",  NULL);
 r3_tree_insert_path(n, "/foo/bar/qux",  NULL);
@@ -300,13 +300,13 @@ digraph g {
 ### Graphviz Related Functions
 
 ```c
-int r3_tree_render_file(const node * tree, const char * format, const char * filename);
+int r3_tree_render_file(const R3Node * tree, const char * format, const char * filename);
 
-int r3_tree_render(const node * tree, const char *layout, const char * format, FILE *fp);
+int r3_tree_render(const R3Node * tree, const char *layout, const char * format, FILE *fp);
 
-int r3_tree_render_dot(const node * tree, const char *layout, FILE *fp);
+int r3_tree_render_dot(const R3Node * tree, const char *layout, FILE *fp);
 
-int r3_tree_render_file(const node * tree, const char * format, const char * filename);
+int r3_tree_render_file(const R3Node * tree, const char * format, const char * filename);
 ```
 
 
@@ -347,7 +347,7 @@ $ret = r3_dispatch($rs, '/blog/post/3' );
 list($complete, $route, $variables) = $ret;
 
 // matched conditions aren't done yet
-list($error, $message) = r3_validate($route); // validate route conditions
+list($error, $message) = r3_validate($route); // validate R3Route conditions
 if ( $error ) {
     echo $message; // "Method not allowed", "...";
 }
@@ -396,9 +396,17 @@ Binding For Other Languages
 * Python pyr3 by @thedrow <https://github.com/thedrow/pyr3>
 * Haskell r3 by @MnO2 <https://github.com/MnO2/r3>
 * Vala r3-vala by @Ronmi <https://github.com/Ronmi/r3-vala>
-* Node.js node-r3 by @othree <https://github.com/othree/node-r3>
-* Node.js node-libr3 by @caasi <https://github.com/caasi/node-r3>
+
+Node.js
+
+* node-r3 by @othree <https://github.com/othree/node-r3>
+* node-libr3 by @caasi <https://github.com/caasi/node-r3>
+
+Ruby
+
 * Ruby rr3 by @tonytonyjan <https://github.com/tonytonyjan/rr3>
+* mruby r3 <https://github.com/rail44/mruby-r3>
+* mruby rake r3 <https://github.com/rail44/mruby-rack-r3>
 
 
 License
