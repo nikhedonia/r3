@@ -59,9 +59,7 @@ cxx_library(
     'src/gvc.c',
     'src/json.c',
   ]),
-  deps = BUCKAROO_DEPS + [
-    ':zmalloc',
-  ],
+  deps = BUCKAROO_DEPS,
   visibility = [
     'PUBLIC',
   ],
@@ -82,5 +80,8 @@ cxx_library(
   ],
   srcs = [
     '3rdparty/zmalloc.c',
+  ],
+  visibility = [
+    'PUBLIC',
   ],
 )
