@@ -1,41 +1,8 @@
 include_defs('//BUCKAROO_DEPS')
 
-def merge_dicts(x, y):
-  z = x.copy()
-  z.update(y)
-  return z
-
-genrule(
-  name = 'config',
-  out = 'config.h',
-  cmd = 'touch $OUT',
-)
-
-macos_preprocessor_flags = [
-  '-DVERSION="1.3.3"',
-  '-DHAVE_DLFCN_H=1',
-  '-DHAVE_GETTIMEOFDAY=1',
-  '-DHAVE_INTTYPES_H=1',
-  '-DHAVE_MALLOC=1',
-  '-DHAVE_MEMORY_H=1',
-  '-DHAVE_MEMSET=1',
-  '-DHAVE_REALLOC=1',
-  '-DHAVE_STDBOOL_H=1',
-  '-DHAVE_STDINT_H=1',
-  '-DHAVE_STDLIB_H=1',
-  '-DHAVE_STRCHR=1',
-  '-DHAVE_STRDUP=1',
-  '-DHAVE_STRINGS_H=1',
-  '-DHAVE_STRING_H=1',
-  '-DHAVE_STRNDUP=1',
-  '-DHAVE_STRSTR=1',
-  '-DHAVE_SYS_STAT_H=1',
-  '-DHAVE_SYS_TIME_H=1',
-  '-DHAVE_SYS_TYPES_H=1',
-  '-DHAVE_UNISTD_H=1',
-  '-DHAVE__BOOL=1',
-  # '-DUSE_ZLIB=1',
-]
+macos_headers = {
+  'config.h': 'src/config.h.macosx',
+}
 
 cxx_library(
   name = 'r3',
@@ -44,14 +11,9 @@ cxx_library(
     ('include', '**/*.h'),
     ('include', '**/*.hpp'),
   ]),
-  headers = merge_dicts(subdir_glob([
-    ('src', '**/*.h'),
-  ]), {
-    'config.h': ':config',
-  }),
-  platform_preprocessor_flags = [
-    ('default', macos_preprocessor_flags),
-    ('^macos.*', macos_preprocessor_flags),
+  platform_headers = [
+    ('default', macos_headers),
+    ('^macos.*', macos_headers),
   ],
   srcs = glob([
     'src/**/*.c',
@@ -73,12 +35,9 @@ cxx_library(
   exported_headers = {
     'zmalloc.h': '3rdparty/zmalloc.h',
   },
-  headers = {
-    'config.h': ':config',
-  },
-  platform_preprocessor_flags = [
-    ('default', macos_preprocessor_flags),
-    ('^macos.*', macos_preprocessor_flags),
+  platform_headers = [
+    ('default', macos_headers),
+    ('^macos.*', macos_headers),
   ],
   srcs = [
     '3rdparty/zmalloc.c',
