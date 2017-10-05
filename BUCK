@@ -50,7 +50,7 @@ cxx_library(
   }),
   platform_preprocessor_flags = [
     ('^macos.*', macos_preprocessor_flags),
-    ('*', macos_preprocessor_flags),
+    ('.*', macos_preprocessor_flags),
   ],
   srcs = glob([
     'src/**/*.c',
@@ -75,7 +75,7 @@ cxx_library(
   },
   platform_preprocessor_flags = [
     ('^macos.*', macos_preprocessor_flags),
-    ('*', macos_preprocessor_flags),
+    ('.*', macos_preprocessor_flags),
   ],
   srcs = [
     '3rdparty/zmalloc.c',
