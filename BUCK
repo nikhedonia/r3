@@ -49,8 +49,8 @@ cxx_library(
     'config.h': ':config',
   }),
   platform_preprocessor_flags = [
-    ('default', macos_preprocessor_flags),
     ('^macos.*', macos_preprocessor_flags),
+    ('*', macos_preprocessor_flags),
   ],
   srcs = glob([
     'src/**/*.c',
